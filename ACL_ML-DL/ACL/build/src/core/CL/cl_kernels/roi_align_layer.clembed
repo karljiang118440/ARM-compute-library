@@ -1,0 +1,545 @@
+R"(
+
+/*
+ * Copyright (c) 2018-2019 ARM Limited.
+ *
+ * SPDX-License-Identifier: MIT
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+/*
+ * Copyright (c) 2016-2018 ARM Limited.
+ *
+ * SPDX-License-Identifier: MIT
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to
+ * deal in the Software without restriction, including without limitation the
+ * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+ * sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+#ifndef ARM_COMPUTE_HELPER_H
+#define ARM_COMPUTE_HELPER_H
+
+#if defined(ARM_COMPUTE_OPENCL_FP16_ENABLED) && defined(cl_khr_fp16)
+#pragma OPENCL EXTENSION cl_khr_fp16 : enable
+#endif // defined(ARM_COMPUTE_OPENCL_FP16_ENABLED) && defined(cl_khr_fp16)
+
+#if defined(ARM_COMPUTE_OPENCL_DOT8_ENABLED) && defined(cl_arm_integer_dot_product_int8)
+#pragma OPENCL EXTENSION cl_arm_integer_dot_product_int8 : enable
+#endif // defined(ARM_COMPUTE_OPENCL_DOT8_ENABLED) && defined(cl_arm_integer_dot_product_int8)
+
+#if defined(ARM_COMPUTE_OPENCL_DOT8_ACC_ENABLED) && defined(cl_arm_integer_dot_product_accumulate_int8)
+#pragma OPENCL EXTENSION cl_arm_integer_dot_product_accumulate_int8 : enable
+#endif // defined(ARM_COMPUTE_OPENCL_DOT8_ACC_ENABLED) && defined(cl_arm_integer_dot_product_accumulate_int8)
+
+#if defined(ARM_COMPUTE_DEBUG_ENABLED) && defined(cl_arm_printf)
+#pragma OPENCL EXTENSION cl_arm_printf : enable
+#endif // defined(ARM_COMPUTE_DEBUG_ENABLED) && defined(cl_arm_printf)
+
+#define EXPAND(x) x
+
+#define CLAMP(x, min_val, max_val) min(max(x, min_val), max_val)
+
+#define VLOAD_STR(size) vload##size
+#define VLOAD(size) VLOAD_STR(size)
+
+#define VSTORE_STR(size) vstore##size
+#define VSTORE(size) VSTORE_STR(size)
+
+#define float1 float
+#define half1 half
+
+#define VEC_DATA_TYPE_STR(type, size) type##size
+#define VEC_DATA_TYPE(type, size) VEC_DATA_TYPE_STR(type, size)
+
+#define CL_VEC_DATA_TYPE_STR(type, size) type##size
+#define CL_VEC_DATA_TYPE(type, size) CL_VEC_DATA_TYPE_STR(type, size)
+
+#define CONVERT_STR(x, type) (convert_##type((x)))
+#define CONVERT(x, type) CONVERT_STR(x, type)
+
+#define CONVERT_SAT_STR(x, type) (convert_##type##_sat((x)))
+#define CONVERT_SAT(x, type) CONVERT_SAT_STR(x, type)
+
+#define CONVERT_SAT_ROUND_STR(x, type, round) (convert_##type##_sat_##round((x)))
+#define CONVERT_SAT_ROUND(x, type, round) CONVERT_SAT_ROUND_STR(x, type, round)
+
+#define VECTOR_DECLARATION(name)     \
+    __global uchar *name##_ptr,      \
+    uint        name##_stride_x, \
+    uint        name##_step_x,   \
+    uint        name##_offset_first_element_in_bytes
+
+#define IMAGE_DECLARATION(name)      \
+    __global uchar *name##_ptr,      \
+    uint        name##_stride_x, \
+    uint        name##_step_x,   \
+    uint        name##_stride_y, \
+    uint        name##_step_y,   \
+    uint        name##_offset_first_element_in_bytes
+
+#define TENSOR3D_DECLARATION(name)   \
+    __global uchar *name##_ptr,      \
+    uint        name##_stride_x, \
+    uint        name##_step_x,   \
+    uint        name##_stride_y, \
+    uint        name##_step_y,   \
+    uint        name##_stride_z, \
+    uint        name##_step_z,   \
+    uint        name##_offset_first_element_in_bytes
+
+#define TENSOR4D_DECLARATION(name)   \
+    __global uchar *name##_ptr,      \
+    uint        name##_stride_x, \
+    uint        name##_step_x,   \
+    uint        name##_stride_y, \
+    uint        name##_step_y,   \
+    uint        name##_stride_z, \
+    uint        name##_step_z,   \
+    uint        name##_stride_w, \
+    uint        name##_step_w,   \
+    uint        name##_offset_first_element_in_bytes
+
+#define CONVERT_TO_VECTOR_STRUCT(name) \
+    update_vector_workitem_ptr(name##_ptr, name##_offset_first_element_in_bytes, name##_stride_x, name##_step_x)
+
+#define CONVERT_TO_VECTOR_STRUCT_NO_STEP(name) \
+    update_vector_workitem_ptr(name##_ptr, name##_offset_first_element_in_bytes, name##_stride_x, 0)
+
+#define CONVERT_TO_IMAGE_STRUCT(name) \
+    update_image_workitem_ptr(name##_ptr, name##_offset_first_element_in_bytes, name##_stride_x, name##_step_x, name##_stride_y, name##_step_y)
+
+#define CONVERT_TO_IMAGE_STRUCT_NO_STEP(name) \
+    update_image_workitem_ptr(name##_ptr, name##_offset_first_element_in_bytes, name##_stride_x, 0, name##_stride_y, 0)
+
+#define CONVERT_TENSOR3D_TO_IMAGE_STRUCT(name) \
+    update_image_from_tensor3D_workitem_ptr(name##_ptr, name##_offset_first_element_in_bytes, name##_stride_x, name##_step_x, name##_stride_y, name##_step_y, name##_stride_z, name##_step_z)
+
+#define CONVERT_TENSOR3D_TO_IMAGE_STRUCT_NO_STEP(name) \
+    update_image_from_tensor3D_workitem_ptr(name##_ptr, name##_offset_first_element_in_bytes, name##_stride_x, 0, name##_stride_y, 0, name##_stride_z, name##_step_z)
+
+#define CONVERT_TENSOR3D_TO_IMAGE_STRUCT(name) \
+    update_image_from_tensor3D_workitem_ptr(name##_ptr, name##_offset_first_element_in_bytes, name##_stride_x, name##_step_x, name##_stride_y, name##_step_y, name##_stride_z, name##_step_z)
+
+#define CONVERT_TO_TENSOR3D_STRUCT(name)                                                                                                           \
+    update_tensor3D_workitem_ptr(name##_ptr, name##_offset_first_element_in_bytes, name##_stride_x, name##_step_x, name##_stride_y, name##_step_y, \
+                                 name##_stride_z, name##_step_z)
+
+#define CONVERT_TO_TENSOR3D_STRUCT_NO_STEP(name) \
+    update_tensor3D_workitem_ptr(name##_ptr, name##_offset_first_element_in_bytes, name##_stride_x, 0, name##_stride_y, 0, name##_stride_z, 0)
+
+#define CONVERT_TO_TENSOR4D_STRUCT(name, mod_size)                                                                                                 \
+    update_tensor4D_workitem_ptr(name##_ptr, name##_offset_first_element_in_bytes, name##_stride_x, name##_step_x, name##_stride_y, name##_step_y, \
+                                 name##_stride_z, name##_step_z, name##_stride_w, name##_step_w, mod_size)
+
+#define CONVERT_TO_TENSOR4D_STRUCT_NO_STEP(name, mod_size) \
+    update_tensor4D_workitem_ptr(name##_ptr, name##_offset_first_element_in_bytes, name##_stride_x, 0, name##_stride_y, 0, name##_stride_z, 0, name##_stride_w, 0, mod_size)
+
+/** Structure to hold Vector information */
+typedef struct Vector
+{
+    __global uchar *ptr;                           /**< Pointer to the starting postion of the buffer */
+    int             offset_first_element_in_bytes; /**< The offset of the first element in the source image */
+    int             stride_x;                      /**< Stride of the image in X dimension (in bytes) */
+} Vector;
+
+/** Structure to hold Image information */
+typedef struct Image
+{
+    __global uchar *ptr;                           /**< Pointer to the starting postion of the buffer */
+    int             offset_first_element_in_bytes; /**< The offset of the first element in the source image */
+    int             stride_x;                      /**< Stride of the image in X dimension (in bytes) */
+    int             stride_y;                      /**< Stride of the image in Y dimension (in bytes) */
+} Image;
+
+/** Structure to hold 3D tensor information */
+typedef struct Tensor3D
+{
+    __global uchar *ptr;                           /**< Pointer to the starting postion of the buffer */
+    int             offset_first_element_in_bytes; /**< The offset of the first element in the source image */
+    int             stride_x;                      /**< Stride of the image in X dimension (in bytes) */
+    int             stride_y;                      /**< Stride of the image in Y dimension (in bytes) */
+    int             stride_z;                      /**< Stride of the image in Z dimension (in bytes) */
+} Tensor3D;
+
+/** Structure to hold 4D tensor information */
+typedef struct Tensor4D
+{
+    __global uchar *ptr;                           /**< Pointer to the starting postion of the buffer */
+    int             offset_first_element_in_bytes; /**< The offset of the first element in the source image */
+    int             stride_x;                      /**< Stride of the image in X dimension (in bytes) */
+    int             stride_y;                      /**< Stride of the image in Y dimension (in bytes) */
+    int             stride_z;                      /**< Stride of the image in Z dimension (in bytes) */
+    int             stride_w;                      /**< Stride of the image in W dimension (in bytes) */
+} Tensor4D;
+
+/** Wrap vector information into an Vector structure, and make the pointer point at this workitem's data.
+ *
+ * @param[in] ptr                           Pointer to the starting postion of the buffer
+ * @param[in] offset_first_element_in_bytes The offset of the first element in the source vector
+ * @param[in] stride_x                      Stride of the vector in X dimension (in bytes)
+ * @param[in] step_x                        stride_x * number of elements along X processed per workitem(in bytes)
+ *
+ * @return An image object
+ */
+inline Vector update_vector_workitem_ptr(__global uchar *ptr, uint offset_first_element_in_bytes, uint stride_x, uint step_x)
+{
+    Vector vector =
+    {
+        .ptr                           = ptr,
+        .offset_first_element_in_bytes = offset_first_element_in_bytes,
+        .stride_x                      = stride_x,
+    };
+    vector.ptr += vector.offset_first_element_in_bytes + get_global_id(0) * step_x;
+    return vector;
+}
+
+/** Wrap image information into an Image structure, and make the pointer point at this workitem's data.
+ *
+ * @param[in] ptr                           Pointer to the starting postion of the buffer
+ * @param[in] offset_first_element_in_bytes The offset of the first element in the source image
+ * @param[in] stride_x                      Stride of the image in X dimension (in bytes)
+ * @param[in] step_x                        stride_x * number of elements along X processed per workitem(in bytes)
+ * @param[in] stride_y                      Stride of the image in Y dimension (in bytes)
+ * @param[in] step_y                        stride_y * number of elements along Y processed per workitem(in bytes)
+ *
+ * @return An image object
+ */
+inline Image update_image_workitem_ptr(__global uchar *ptr, uint offset_first_element_in_bytes, uint stride_x, uint step_x, uint stride_y, uint step_y)
+{
+    Image img =
+    {
+        .ptr                           = ptr,
+        .offset_first_element_in_bytes = offset_first_element_in_bytes,
+        .stride_x                      = stride_x,
+        .stride_y                      = stride_y
+    };
+    img.ptr += img.offset_first_element_in_bytes + get_global_id(0) * step_x + get_global_id(1) * step_y;
+    return img;
+}
+
+/** Wrap 3D tensor information into an image structure, and make the pointer point at this workitem's data.
+ *
+ * @param[in] ptr                           Pointer to the starting postion of the buffer
+ * @param[in] offset_first_element_in_bytes The offset of the first element in the source image
+ * @param[in] stride_x                      Stride of the image in X dimension (in bytes)
+ * @param[in] step_x                        stride_x * number of elements along X processed per workitem(in bytes)
+ * @param[in] stride_y                      Stride of the image in Y dimension (in bytes)
+ * @param[in] step_y                        stride_y * number of elements along Y processed per workitem(in bytes)
+ * @param[in] stride_z                      Stride of the image in Z dimension (in bytes)
+ * @param[in] step_z                        stride_z * number of elements along Z processed per workitem(in bytes)
+ *
+ * @return A 3D tensor object
+ */
+inline Image update_image_from_tensor3D_workitem_ptr(__global uchar *ptr, uint offset_first_element_in_bytes, uint stride_x, uint step_x, uint stride_y, uint step_y, uint stride_z, uint step_z)
+{
+    Image img =
+    {
+        .ptr                           = ptr,
+        .offset_first_element_in_bytes = offset_first_element_in_bytes,
+        .stride_x                      = stride_x,
+        .stride_y                      = stride_y
+    };
+    img.ptr += img.offset_first_element_in_bytes + get_global_id(0) * step_x + get_global_id(1) * step_y + get_global_id(2) * step_z;
+    return img;
+}
+
+/** Wrap 3D tensor information into an tensor structure, and make the pointer point at this workitem's data.
+ *
+ * @param[in] ptr                           Pointer to the starting postion of the buffer
+ * @param[in] offset_first_element_in_bytes The offset of the first element in the source image
+ * @param[in] stride_x                      Stride of the image in X dimension (in bytes)
+ * @param[in] step_x                        stride_x * number of elements along X processed per workitem(in bytes)
+ * @param[in] stride_y                      Stride of the image in Y dimension (in bytes)
+ * @param[in] step_y                        stride_y * number of elements along Y processed per workitem(in bytes)
+ * @param[in] stride_z                      Stride of the image in Z dimension (in bytes)
+ * @param[in] step_z                        stride_z * number of elements along Z processed per workitem(in bytes)
+ *
+ * @return A 3D tensor object
+ */
+inline Tensor3D update_tensor3D_workitem_ptr(__global uchar *ptr, uint offset_first_element_in_bytes, uint stride_x, uint step_x, uint stride_y, uint step_y, uint stride_z, uint step_z)
+{
+    Tensor3D tensor =
+    {
+        .ptr                           = ptr,
+        .offset_first_element_in_bytes = offset_first_element_in_bytes,
+        .stride_x                      = stride_x,
+        .stride_y                      = stride_y,
+        .stride_z                      = stride_z
+    };
+    tensor.ptr += tensor.offset_first_element_in_bytes + get_global_id(0) * step_x + get_global_id(1) * step_y + get_global_id(2) * step_z;
+    return tensor;
+}
+
+inline Tensor4D update_tensor4D_workitem_ptr(__global uchar *ptr, uint offset_first_element_in_bytes, uint stride_x, uint step_x, uint stride_y, uint step_y, uint stride_z, uint step_z, uint stride_w,
+                                             uint step_w,
+                                             uint mod_size)
+{
+    Tensor4D tensor =
+    {
+        .ptr                           = ptr,
+        .offset_first_element_in_bytes = offset_first_element_in_bytes,
+        .stride_x                      = stride_x,
+        .stride_y                      = stride_y,
+        .stride_z                      = stride_z,
+        .stride_w                      = stride_w
+    };
+
+    tensor.ptr += tensor.offset_first_element_in_bytes + get_global_id(0) * step_x + get_global_id(1) * step_y + (get_global_id(2) % mod_size) * step_z + (get_global_id(2) / mod_size) * step_w;
+    return tensor;
+}
+
+/** Get the pointer position of a Vector
+ *
+ * @param[in] vec Pointer to the starting position of the buffer
+ * @param[in] x   Relative X position
+ */
+inline __global const uchar *vector_offset(const Vector *vec, int x)
+{
+    return vec->ptr + x * vec->stride_x;
+}
+
+/** Get the pointer position of a Image
+ *
+ * @param[in] img Pointer to the starting position of the buffer
+ * @param[in] x   Relative X position
+ * @param[in] y   Relative Y position
+ */
+inline __global uchar *offset(const Image *img, int x, int y)
+{
+    return img->ptr + x * img->stride_x + y * img->stride_y;
+}
+
+/** Get the pointer position of a Tensor3D
+ *
+ * @param[in] tensor Pointer to the starting position of the buffer
+ * @param[in] x      Relative X position
+ * @param[in] y      Relative Y position
+ * @param[in] z      Relative Z position
+ */
+inline __global const uchar *tensor3D_offset(const Tensor3D *tensor, int x, int y, int z)
+{
+    return tensor->ptr + x * tensor->stride_x + y * tensor->stride_y + z * tensor->stride_z;
+}
+
+/** Get the pointer position of a Tensor4D
+ *
+ * @param[in] tensor Pointer to the starting position of the buffer
+ * @param[in] x      Relative X position
+ * @param[in] y      Relative Y position
+ * @param[in] z      Relative Z position
+ * @param[in] w      Relative W position
+ */
+inline __global const uchar *tensor4D_offset(const Tensor4D *tensor, int x, int y, int z, int w)
+{
+    return tensor->ptr + x * tensor->stride_x + y * tensor->stride_y + z * tensor->stride_z + w * tensor->stride_w;
+}
+
+#endif // _HELPER_H
+
+// This specifies the value to shift the result of roi_dims / pooled_dims before ceiling.
+// It is close to the epsilon machine (for a floating point system, x and x+EPS are the same number).
+#define EPS_GRID 0.00001f
+
+#if defined(DATA_TYPE) && defined(POOLED_DIM_X) && defined(POOLED_DIM_Y) && defined(MAX_DIM_X) && defined(MAX_DIM_Y) && defined(MAX_DIM_Z) && defined(SPATIAL_SCALE) // Check for compile time constants
+
+/** Performs a roi align on a single output pixel.
+ *
+ * @param[in] input          Pointer to input Tensor3D struct.
+ * @param[in] region_start_x Start x index projected onto the input tensor.
+ * @param[in] region_end_x   End x index projected onto the input tensor.
+ * @param[in] region_start_y Start y index projected onto the input tensor.
+ * @param[in] region_end_y   End y index projected onto the input tensor.
+ * @param[in] pz             z index of the input tensor.
+ *
+ * @return An average pooled value from the region specified in the input tensor.
+ */
+inline DATA_TYPE roi_align_1x1(const Tensor3D *input, float region_start_x,
+                               float bin_size_x,
+                               float grid_size_x,
+                               float region_end_x,
+                               float region_start_y,
+                               float bin_size_y,
+                               float grid_size_y,
+                               float region_end_y,
+                               int   pz)
+{
+    // Iterate through the pooling region
+    float sum = 0;
+    for(int iy = 0; iy < grid_size_y; ++iy)
+    {
+        for(int ix = 0; ix < grid_size_x; ++ix)
+        {
+            // Align the window in the middle of every bin
+            const float y = region_start_y + (iy + 0.5f) * bin_size_y / (float)grid_size_y;
+            const float x = region_start_x + (ix + 0.5f) * bin_size_x / (float)grid_size_x;
+
+            // Interpolation in the unit square
+            const int y_low  = (int)y;
+            const int x_low  = (int)x;
+            const int y_high = y_low + 1;
+            const int x_high = x_low + 1;
+
+            const float ly = y - y_low;
+            const float lx = x - x_low;
+            const float hy = 1.f - ly;
+            const float hx = 1.f - lx;
+
+            const float w1 = hy * hx;
+            const float w2 = hy * lx;
+            const float w3 = ly * hx;
+            const float w4 = ly * lx;
+#if defined(NHWC)
+            const DATA_TYPE data1 = *(__global DATA_TYPE *)tensor3D_offset(input, pz, x_low, y_low);
+            const DATA_TYPE data2 = *(__global DATA_TYPE *)tensor3D_offset(input, pz, x_high, y_low);
+            const DATA_TYPE data3 = *(__global DATA_TYPE *)tensor3D_offset(input, pz, x_low, y_high);
+            const DATA_TYPE data4 = *(__global DATA_TYPE *)tensor3D_offset(input, pz, x_high, y_high);
+#else  // !defined(NHWC)
+            const DATA_TYPE data1                 = *(__global DATA_TYPE *)tensor3D_offset(input, x_low, y_low, pz);
+            const DATA_TYPE data2                 = *(__global DATA_TYPE *)tensor3D_offset(input, x_high, y_low, pz);
+            const DATA_TYPE data3                 = *(__global DATA_TYPE *)tensor3D_offset(input, x_low, y_high, pz);
+            const DATA_TYPE data4                 = *(__global DATA_TYPE *)tensor3D_offset(input, x_high, y_high, pz);
+#endif // defined(NHWC)
+            sum += w1 * data1 + w2 * data2 + w3 * data3 + w4 * data4;
+        }
+    }
+
+    return (DATA_TYPE)(sum / (grid_size_x * grid_size_y));
+}
+
+/** Performs a roi align function.
+ *
+ * @note Datatype must be passed using -DDATA_TYPE e.g. -DDATA_TYPE=float. Supported data types are F16, F32;
+ * @note Datasize must be passed using -DDATA_SIZE e.g. -DDATA_SIZE=32;
+ * @note Input dimensions must be passed using -DMAX_DIM_X, -DMAX_DIM_Y and -DMAX_DIM_Z;
+ * @note Pooled region dimensions must be passed using -DPOOLED_DIM_X and -DPOOLED_DIM_Y;
+ * @note Spatial scale must be passed using -DSPATIAL_SCALE;
+ * @note Sampling ratio (i.e., the number of samples in each bin) may be passed using -DSAMPLING_RATIO. If not defined each roi
+ *       will have a default sampling ratio of roi_dims/pooling_dims
+ *
+ * @param[in]  input_ptr                            Pointer to the source tensor. Supported data types: F16, F32
+ * @param[in]  input_stride_x                       Stride of the source tensor in X dimension (in bytes)
+ * @param[in]  input_step_x                         input_stride_x * number of elements along X processed per workitem(in bytes)
+ * @param[in]  input_stride_y                       Stride of the source tensor in Y dimension (in bytes)
+ * @param[in]  input_step_y                         input_stride_y * number of elements along Y processed per workitem(in bytes)
+ * @param[in]  input_stride_z                       Stride of the source tensor in Z dimension (in bytes)
+ * @param[in]  input_step_z                         input_stride_z * number of elements along Z processed per workitem(in bytes)
+ * @param[in]  input_offset_first_element_in_bytes  The offset of the first element in the pooled region of the source tensor as specifed by ROI
+ * @param[in]  rois_ptr                             Pointer to the ROIs tensor. Layout: { batch_index, x1, y1, x2, y2 }. Supported data types: same as @p input_ptr
+ * @param[in]  rois_stride_x                        Stride of the ROIs tensor in X dimension (in bytes)
+ * @param[in]  rois_step_x                          Step of the ROIs tensor in X dimension (in bytes)
+ * @param[in]  rois_stride_y                        Stride of the ROIs tensor in Y dimension (in bytes)
+ * @param[in]  rois_step_y                          Step of the ROIs tensor in Y dimension (in bytes)
+ * @param[in]  rois_offset_first_element_in_bytes   The offset of the first element in the ROIs tensor
+ * @param[out] output_ptr                           Pointer to the destination tensor. Supported data types: Supported data types: same as @p input_ptr
+ * @param[in]  output_stride_x                      Stride of the destination tensor in X dimension (in bytes)
+ * @param[in]  output_step_x                        output_stride_x * number of elements along X processed per workitem(in bytes)
+ * @param[in]  output_stride_y                      Stride of the destination tensor in Y dimension (in bytes)
+ * @param[in]  output_step_y                        output_stride_y * number of elements along Y processed per workitem(in bytes)
+ * @param[in]  output_stride_z                      Stride of the destination tensor in Z dimension (in bytes)
+ * @param[in]  output_step_z                        output_stride_z * number of elements along Z processed per workitem(in bytes)
+ * @param[in]  output_offset_first_element_in_bytes The offset of the first element in the destination tensor
+ * @param[in]  input_stride_w                       Stride of the source tensor in W dimension (in bytes)
+ * @param[in]  output_stride_w                      Stride of the destination tensor in W dimension (in bytes)
+ */
+__kernel void roi_align_layer(
+    TENSOR3D_DECLARATION(input),
+    IMAGE_DECLARATION(rois),
+    TENSOR3D_DECLARATION(output),
+    unsigned int input_stride_w, unsigned int output_stride_w)
+{
+    // Get pixels pointer
+    Tensor3D input  = CONVERT_TO_TENSOR3D_STRUCT_NO_STEP(input);
+    Image    rois   = CONVERT_TO_IMAGE_STRUCT_NO_STEP(rois);
+    Tensor3D output = CONVERT_TO_TENSOR3D_STRUCT_NO_STEP(output);
+
+#if defined(NHWC)
+    const int px = get_global_id(1);
+    const int py = get_global_id(2);
+    const int pw = get_global_id(0);
+#else  // !defined(NHWC)
+    const int                                  px = get_global_id(0);
+    const int                                  py = get_global_id(1);
+    const int                                  pw = get_global_id(2);
+#endif // defined(NHWC)
+
+    // Load roi parameters
+    // roi is laid out as follows { batch_index, x1, y1, x2, y2 }
+    const ushort roi_batch = (ushort) * ((__global DATA_TYPE *)offset(&rois, 0, pw));
+    const VEC_DATA_TYPE(DATA_TYPE, 4)
+    roi                 = vload4(0, (__global DATA_TYPE *)offset(&rois, 1, pw));
+    const float2 roi_anchor = convert_float2(roi.s01) * convert_float(SPATIAL_SCALE);
+    const float2 roi_dims   = fmax(convert_float2(roi.s23 - roi.s01) * convert_float(SPATIAL_SCALE), 1.f);
+
+    // Calculate pooled region start and end
+    const float2 spatial_indx     = (float2)(px, py);
+    const float2 pooled_dims      = (float2)(POOLED_DIM_X, POOLED_DIM_Y);
+    const float2 max_spatial_dims = (float2)(MAX_DIM_X, MAX_DIM_Y);
+
+    const float2 bin_size     = (float2)((roi_dims.s0 / (float)POOLED_DIM_X), (roi_dims.s1 / (float)POOLED_DIM_Y));
+    float2       region_start = spatial_indx * bin_size + roi_anchor;
+    float2       region_end   = (spatial_indx + 1) * bin_size + roi_anchor;
+
+    region_start = clamp(region_start, 0, max_spatial_dims);
+    region_end   = clamp(region_end, 0, max_spatial_dims);
+
+#if defined(SAMPLING_RATIO)
+    const float2 roi_bin_grid = SAMPLING_RATIO;
+#else  // !defined(SAMPLING_RATIO)
+    // Note that we subtract EPS_GRID before ceiling. This is to avoid situations where 1.000001 gets ceiled to 2.
+    const float2   roi_bin_grid = ceil(bin_size - EPS_GRID);
+#endif // defined(SAMPLING_RATIO)
+
+    // Move input and output pointer across the fourth dimension
+    input.ptr += roi_batch * input_stride_w;
+    output.ptr += pw * output_stride_w;
+    for(int pz = 0; pz < MAX_DIM_Z; ++pz)
+    {
+#if defined(NHWC)
+        __global DATA_TYPE *_output_ptr = (__global DATA_TYPE *)tensor3D_offset(&output, pz, px, py);
+#else  // !defined(NHWC)
+        __global DATA_TYPE *_output_ptr  = (__global DATA_TYPE *)tensor3D_offset(&output, px, py, pz);
+#endif // defined(NHWC)
+        *_output_ptr = (__global DATA_TYPE)roi_align_1x1(&input,
+                                                         region_start.x,
+                                                         bin_size.x,
+                                                         roi_bin_grid.x,
+                                                         region_end.x,
+                                                         region_start.y,
+                                                         bin_size.y,
+                                                         roi_bin_grid.y,
+                                                         region_end.y, pz);
+    }
+}
+#endif // Check for compile time constants
+
+)"
