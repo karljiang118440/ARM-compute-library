@@ -39,7 +39,17 @@ aarch64-linux-gnu-g++ examples/neon_convolution.cpp utils/Utils.cpp -I. -Iinclud
 
 > larm_compute  -larm_compute_core 信息
 
-> export LD_LIBRARY_PATH=$LD_LIBRARY_PATH::/home/djiango/NEON/ComputeLibrary-master/build
+> export LD_LIBRARY_PATH=$LD_LIBRARY_PATH::/home/djiango/NEON/ComputeLibrary-master/build  
+>:无法被使用，找不到对应的库文件。
 
 
+##3、还是需要安装 -larm_compute -larm_compute_core 才能够用 ，参考之前添加第三方库的方法。
 
+>
+
+
+##4、重新选择编译方式
+
+aarch64-linux-gnu-g++ examples/neon_convolution.cpp utils/Utils.cpp -I. -Iinclude -std=c++11 -L /home/djiango/NEON/ComputeLibrary-master/build -larm_compute -larm_compute_core -o neon_convolution
+
+>明显有效果了，和以前并不一样
