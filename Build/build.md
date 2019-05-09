@@ -52,4 +52,10 @@ aarch64-linux-gnu-g++ examples/neon_convolution.cpp utils/Utils.cpp -I. -Iinclud
 
 aarch64-linux-gnu-g++ examples/neon_convolution.cpp utils/Utils.cpp -I. -Iinclude -std=c++11 -L /home/djiango/NEON/ComputeLibrary-master/build -larm_compute -larm_compute_core -o neon_convolution
 
->明显有效果了，和以前并不一样
+>明显有效果了，和以前并不一样。但是又出现新问题。
+
+##5、出现 undefined 的问题
+
+是否是因为头文件的问题？并没有指定头文件？
+aarch64-linux-gnu-g++ examples/neon_convolution.cpp utils/Utils.cpp -I/home/djiango/NEON/ComputeLibrary-master/include -std=c++11 -L /home/djiango/NEON/ComputeLibrary-master/build -larm_compute -larm_compute_core -o neon_convolution
+/home/djiango/NEON/ComputeLibrary-master/include
