@@ -167,4 +167,43 @@ ERROR in setup_context src/runtime/GLES_COMPUTE/GCScheduler.cpp:88: Failed to ge
 Test FAILED
 
 
-#4、
+#4、graph 的运行
+
+root@s32v234evb:~/karl/build/examples# ./graph_alexnet
+
+./graph_alexnet
+
+Threads : 1
+Target : NEON
+Data type : F32
+Data layout : NHWC
+Tuner enabled? : false
+Tuner file :
+Fast math enabled? : false
+
+Can't load libEGL.so: libGLESv3.so: cannot open shared object file: No such file or directory
+
+Test passed
+
+>为何也是 Test passed?并没有使用到 OpenGL 最直观的解释。
+
+
+
+root@s32v234evb:~/karl/build/examples# ./graph_vgg16
+
+./graph_vgg16
+
+Threads : 1
+Target : NEON
+Data type : F32
+Data layout : NHWC
+Tuner enabled? : false
+Tuner file :
+Fast math enabled? : false
+
+Can't load libEGL.so: libGLESv3.so: cannot open shared object file: No such file or directory
+
+Test passed
+
+
+>基本上除了需要使用 opencl的东西以外其他的都是可以拿来直接使用的。
