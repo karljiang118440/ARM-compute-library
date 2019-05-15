@@ -199,6 +199,7 @@ Test passed
 ./build/examples/graph_alexnet 1 /home/root/karl/compute_library_alexnet /home/root/karl/compute_library_alexnet/go_kart.ppm /home/root/karl/compute_library_alexnet/labels.txt
 
 
+./build/examples/graph_alexnet 0 /home/root/karl/compute_library_alexnet /home/root/karl/compute_library_alexnet/go_kart.ppm /home/root/karl/compute_library_alexnet/labels.txt
 
 
 
@@ -225,3 +226,49 @@ Test passed
 
 
 关键是 libEGL.so 的库已经存在不应该没有，属于没有能够定位的出来吗？
+
+
+
+
+
+
+#5、cpuinfo 查看cpu 信息
+
+cat /proc/cpuinfo
+
+root@s32v234evb:~/karl# cat /proc/cpuinfo
+processor       : 0
+BogoMIPS        : 20.00
+Features        : fp asimd evtstrm crc32
+CPU implementer : 0x41
+CPU architecture: 8
+CPU variant     : 0x0
+CPU part        : 0xd03
+CPU revision    : 4
+
+processor       : 1
+BogoMIPS        : 20.00
+Features        : fp asimd evtstrm crc32
+CPU implementer : 0x41
+CPU architecture: 8
+CPU variant     : 0x0
+CPU part        : 0xd03
+CPU revision    : 4
+
+processor       : 2
+BogoMIPS        : 20.00
+Features        : fp asimd evtstrm crc32
+CPU implementer : 0x41
+CPU architecture: 8
+CPU variant     : 0x0
+CPU part        : 0xd03
+CPU revision    : 4
+
+processor       : 3
+BogoMIPS        : 20.00
+Features        : fp asimd evtstrm crc32
+CPU implementer : 0x41
+CPU architecture: 8
+CPU variant     : 0x0
+CPU part        : 0xd03
+CPU revision    : 4
