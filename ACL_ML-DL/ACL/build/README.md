@@ -5,6 +5,8 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/root/karl/ACL/build
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/root/karl/build
 
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/root/karl/build/opengles-3.1-stubs
+
 
 chmod a+x ./examples/graph_lenet
 root@s32v234evb:~/karl# chmod a+x ACL*
@@ -189,6 +191,19 @@ Test passed
 
 
 
+##4.1、修改 graph 的命令方式
+
+./graph_alexnet <target> <cnn_data> <input_image> <labels>
+
+
+./build/examples/graph_alexnet 1 /home/root/karl/compute_library_alexnet /home/root/karl/compute_library_alexnet/go_kart.ppm /home/root/karl/compute_library_alexnet/labels.txt
+
+
+
+
+
+
+
 root@s32v234evb:~/karl/build/examples# ./graph_vgg16
 
 ./graph_vgg16
@@ -207,3 +222,6 @@ Test passed
 
 
 >基本上除了需要使用 opencl的东西以外其他的都是可以拿来直接使用的。
+
+
+关键是 libEGL.so 的库已经存在不应该没有，属于没有能够定位的出来吗？
