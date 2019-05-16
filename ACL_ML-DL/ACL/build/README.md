@@ -3,7 +3,11 @@
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/root/karl/ACL/build
 
+
+
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/root/karl/build
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/root/karl/build_opencl1/
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/root/karl/build/opengles-3.1-stubs
 
@@ -24,6 +28,10 @@ chmod -R 777 文件夹
 
  
 
+
+
+
+
 chmod 777 test.sh
 
 chmod +x 某文件
@@ -32,6 +40,12 @@ chmod +x 某文件
 如果给文件所有者添加可执行权限：chmod u+x 文件名；
 如果给所在组添加可执行权限：chmod g+x 文件名；
 如果给所在组以外的人添加可执行权限：chmod o+x 文件名
+
+
+
+
+
+
 
 
 
@@ -196,10 +210,13 @@ Test passed
 ./graph_alexnet <target> <cnn_data> <input_image> <labels>
 
 
-./build/examples/graph_alexnet 1 /home/root/karl/compute_library_alexnet /home/root/karl/compute_library_alexnet/go_kart.ppm /home/root/karl/compute_library_alexnet/labels.txt
+./build/examples/graph_alexnet 1 /home/root/karl/alexnet /home/root/karl/alexnet/go_kart.ppm /home/root/karl/alexnet/labels.txt
 
 
-./build/examples/graph_alexnet 0 /home/root/karl/compute_library_alexnet /home/root/karl/compute_library_alexnet/go_kart.ppm /home/root/karl/compute_library_alexnet/labels.txt
+./build/examples/graph_alexnet 0 /home/root/karl/alexnet /home/root/karl/alexnet/go_kart.ppm /home/root/karl/alexnet/labels.txt
+
+
+
 
 
 
@@ -228,6 +245,42 @@ Test passed
 关键是 libEGL.so 的库已经存在不应该没有，属于没有能够定位的出来吗？
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+##4.2、opencl=0,重新编译
+
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/root/ACL/build
+chmod -R 777 /home/root/ACL/alexnet
+chmod -R 777 /home/root/ACL/build
+
+
+
+./graph_alexnet <target> <cnn_data> <input_image> <labels>
+
+
+./build/examples/graph_alexnet 1 /home/root/ACL/alexnet /home/root/ACL/alexnet/go_kart.ppm /home/root/ACL/alexnet/labels.txt
+
+
+./build/examples/graph_alexnet 0 /home/root/ACL/alexnet /home/root/ACL/alexnet/go_kart.ppm /home/root/ACL/alexnet/labels.txt
+
+
+
+
+
+###4.3、错误更多了
 
 
 
