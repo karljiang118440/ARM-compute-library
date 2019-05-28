@@ -1,4 +1,4 @@
-# 1¡¢Ö±½ÓÔËĞĞ½»²æ±àÒëµÄÎÄ¼ş°üÀ¨Ìí¼Ó¿â
+# 1ã€ç›´æ¥è¿è¡Œäº¤å‰ç¼–è¯‘çš„æ–‡ä»¶åŒ…æ‹¬æ·»åŠ åº“
 
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/root/karl/ACL/build
@@ -20,11 +20,11 @@ root@s32v234evb:~/karl# chmod a+x build/
 
 
 
-##1.1¡¢Linux ¸øÎÄ¼ş¼Ğ»òÕßÎÄ¼şÔö¼ÓÈ¨ÏŞ
+##1.1ã€Linux ç»™æ–‡ä»¶å¤¹æˆ–è€…æ–‡ä»¶å¢åŠ æƒé™
 
-chmod -R 777 ÎÄ¼ş¼Ğ
-²ÎÊı-RÊÇµİ¹éµÄÒâË¼
-777±íÊ¾¿ª·ÅËùÓĞÈ¨ÏŞ
+chmod -R 777 æ–‡ä»¶å¤¹
+å‚æ•°-Ræ˜¯é€’å½’çš„æ„æ€
+777è¡¨ç¤ºå¼€æ”¾æ‰€æœ‰æƒé™
 
  
 
@@ -34,14 +34,12 @@ chmod -R 777 ÎÄ¼ş¼Ğ
 
 chmod 777 test.sh
 
-chmod +x Ä³ÎÄ¼ş
+chmod +x æŸæ–‡ä»¶
 
-Èç¹û¸øËùÓĞÈËÌí¼Ó¿ÉÖ´ĞĞÈ¨ÏŞ£ºchmod a+x ÎÄ¼şÃû£»
-Èç¹û¸øÎÄ¼şËùÓĞÕßÌí¼Ó¿ÉÖ´ĞĞÈ¨ÏŞ£ºchmod u+x ÎÄ¼şÃû£»
-Èç¹û¸øËùÔÚ×éÌí¼Ó¿ÉÖ´ĞĞÈ¨ÏŞ£ºchmod g+x ÎÄ¼şÃû£»
-Èç¹û¸øËùÔÚ×éÒÔÍâµÄÈËÌí¼Ó¿ÉÖ´ĞĞÈ¨ÏŞ£ºchmod o+x ÎÄ¼şÃû
-
-
+å¦‚æœç»™æ‰€æœ‰äººæ·»åŠ å¯æ‰§è¡Œæƒé™ï¼šchmod a+x æ–‡ä»¶åï¼›
+å¦‚æœç»™æ–‡ä»¶æ‰€æœ‰è€…æ·»åŠ å¯æ‰§è¡Œæƒé™ï¼šchmod u+x æ–‡ä»¶åï¼›
+å¦‚æœç»™æ‰€åœ¨ç»„æ·»åŠ å¯æ‰§è¡Œæƒé™ï¼šchmod g+x æ–‡ä»¶åï¼›
+å¦‚æœç»™æ‰€åœ¨ç»„ä»¥å¤–çš„äººæ·»åŠ å¯æ‰§è¡Œæƒé™ï¼šchmod o+x æ–‡ä»¶å
 
 
 
@@ -50,11 +48,13 @@ chmod +x Ä³ÎÄ¼ş
 
 
 
-##1.2¡¢Test
+
+
+##1.2ã€Test
 
 ./examples/graph_lenet
 
->ÔËĞĞ½á¹ûÈçÏÂ£º
+>è¿è¡Œç»“æœå¦‚ä¸‹ï¼š
 
 Threads : 1
 Target : NEON
@@ -142,19 +142,19 @@ Copying one row starting from [0,2,1]
 Test passed
 
 
->£º¿ÉÒÔÄ¬ÈÏÎªÄÜ¹»Í¨¹ı±àÒëÁËÔÚ°å×ÓÖĞ¡£
-ÆäËûµÄneon ¹¤³Ì¶¼ÊÇÄÜ¹»±àÒëÍ¨¹ıµÄ¡£
+>ï¼šå¯ä»¥é»˜è®¤ä¸ºèƒ½å¤Ÿé€šè¿‡ç¼–è¯‘äº†åœ¨æ¿å­ä¸­ã€‚
+å…¶ä»–çš„neon å·¥ç¨‹éƒ½æ˜¯èƒ½å¤Ÿç¼–è¯‘é€šè¿‡çš„ã€‚
 
 
 
 
-#2¡¢add the libopencl.so
+#2ã€add the libopencl.so
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/djiango/NEON/ComputeLibrary-master/build/opencl-1.2-stubs
 
 
 
-#3¡¢¶Ô cl µÄ±àÒë
+#3ã€å¯¹ cl çš„ç¼–è¯‘
 
 
 root@s32v234evb:~/karl/build/examples# ./gc_absdiff
@@ -183,7 +183,7 @@ ERROR in setup_context src/runtime/GLES_COMPUTE/GCScheduler.cpp:88: Failed to ge
 Test FAILED
 
 
-#4¡¢graph µÄÔËĞĞ
+#4ã€graph çš„è¿è¡Œ
 
 root@s32v234evb:~/karl/build/examples# ./graph_alexnet
 
@@ -201,11 +201,11 @@ Can't load libEGL.so: libGLESv3.so: cannot open shared object file: No such file
 
 Test passed
 
->ÎªºÎÒ²ÊÇ Test passed?²¢Ã»ÓĞÊ¹ÓÃµ½ OpenGL ×îÖ±¹ÛµÄ½âÊÍ¡£
+>ä¸ºä½•ä¹Ÿæ˜¯ Test passed?å¹¶æ²¡æœ‰ä½¿ç”¨åˆ° OpenGL æœ€ç›´è§‚çš„è§£é‡Šã€‚
 
 
 
-##4.1¡¢ĞŞ¸Ä graph µÄÃüÁî·½Ê½
+##4.1ã€ä¿®æ”¹ graph çš„å‘½ä»¤æ–¹å¼
 
 ./graph_alexnet <target> <cnn_data> <input_image> <labels>
 
@@ -239,13 +239,10 @@ Can't load libEGL.so: libGLESv3.so: cannot open shared object file: No such file
 Test passed
 
 
->»ù±¾ÉÏ³ıÁËĞèÒªÊ¹ÓÃ openclµÄ¶«Î÷ÒÔÍâÆäËûµÄ¶¼ÊÇ¿ÉÒÔÄÃÀ´Ö±½ÓÊ¹ÓÃµÄ¡£
+>åŸºæœ¬ä¸Šé™¤äº†éœ€è¦ä½¿ç”¨ openclçš„ä¸œè¥¿ä»¥å¤–å…¶ä»–çš„éƒ½æ˜¯å¯ä»¥æ‹¿æ¥ç›´æ¥ä½¿ç”¨çš„ã€‚
 
 
-¹Ø¼üÊÇ libEGL.so µÄ¿âÒÑ¾­´æÔÚ²»Ó¦¸ÃÃ»ÓĞ£¬ÊôÓÚÃ»ÓĞÄÜ¹»¶¨Î»µÄ³öÀ´Âğ£¿
-
-
-
+å…³é”®æ˜¯ libEGL.so çš„åº“å·²ç»å­˜åœ¨ä¸åº”è¯¥æ²¡æœ‰ï¼Œå±äºæ²¡æœ‰èƒ½å¤Ÿå®šä½çš„å‡ºæ¥å—ï¼Ÿ
 
 
 
@@ -259,7 +256,10 @@ Test passed
 
 
 
-##4.2¡¢opencl=0,ÖØĞÂ±àÒë
+
+
+
+##4.2ã€opencl=0,é‡æ–°ç¼–è¯‘
 
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/root/ACL/build
@@ -280,12 +280,12 @@ chmod -R 777 /home/root/ACL/build
 
 
 
-###4.3¡¢´íÎó¸ü¶àÁË
+###4.3ã€é”™è¯¯æ›´å¤šäº†
 
 
 
 
-#5¡¢cpuinfo ²é¿´cpu ĞÅÏ¢
+#5ã€cpuinfo æŸ¥çœ‹cpu ä¿¡æ¯
 
 cat /proc/cpuinfo
 
@@ -325,3 +325,23 @@ CPU architecture: 8
 CPU variant     : 0x0
 CPU part        : 0xd03
 CPU revision    : 4
+
+
+#5ã€Debug
+##1ã€opencl
+
+add lib in usr/lib
+ arm lib  :/usr/lib
+ acl lib : /home/root/karl/build_opencl1
+cp libOpenCL.so /usr/lib
+cp libEGL.so /usr/lib
+
+cd /usr/lib & ls
+cd /home/root/karl/build_opencl1/examples
+
+> it show errors just like before,what a fuck
+
+
+
+
+
