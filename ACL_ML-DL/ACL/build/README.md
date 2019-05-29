@@ -1,14 +1,11 @@
 # 1、直接运行交叉编译的文件包括添加库
 
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/root/karl/ACL/build
-
-
-
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/root/karl/build
 
-export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/root/karl/build_opencl1/
 
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/root/karl/build_opencl1/
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/root/karl/build/opengles-3.1-stubs
 
 
@@ -17,7 +14,8 @@ root@s32v234evb:~/karl# chmod a+x ACL*
 
 root@s32v234evb:~/karl# chmod a+x build/
 
-
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/root/karl/build1  # neon=1,opencl=0,gles=0
+root@s32v234evb:~/karl# chmod a+x build1/
 
 
 ##1.1、Linux 给文件夹或者文件增加权限
@@ -213,10 +211,21 @@ Test passed
 ./build/examples/graph_alexnet 1 /home/root/karl/alexnet /home/root/karl/alexnet/go_kart.ppm /home/root/karl/alexnet/labels.txt
 
 
-./build/examples/graph_alexnet 0 /home/root/karl/alexnet /home/root/karl/alexnet/go_kart.ppm /home/root/karl/alexnet/labels.txt
+./build1/examples/graph_alexnet 0 /home/root/karl/alexnet /home/root/karl/alexnet/go_kart.ppm /home/root/karl/alexnet/labels.txt
+
+执行结果
+./build1/examples/graph_alexnet
+
+Threads : 1
+Target : NEON
+Data type : F32
+Data layout : NHWC
+Tuner enabled? : false
+Tuner file :
+Fast math enabled? : false
 
 
-
+Test passed
 
 
 
