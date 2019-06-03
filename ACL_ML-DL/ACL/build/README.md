@@ -11,11 +11,15 @@ export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/root/karl/build_opencl1/
 
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/root/karl/build/opengles-3.1-stubs
 
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/root/karl/build_opencl1/
+
 
 chmod a+x ./examples/graph_lenet
 root@s32v234evb:~/karl# chmod a+x ACL*
 
 root@s32v234evb:~/karl# chmod a+x build/
+
+root@s32v234evb:~/karl# chmod a+x build_opencl1/
 
 
 
