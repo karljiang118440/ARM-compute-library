@@ -30,33 +30,6 @@
 using namespace arm_compute;
 using namespace utils;
 
-/** Gaussian 3x3 matrix
- */
-const int16_t gaussian3x3[] =
-{
-    1, 2, 1,
-    2, 4, 2,
-    1, 2, 1
-};
-
-
-
-#if 0
-/** Gaussian 5x5 matrix
- */
-const int16_t gaussian5x5[] =
-{
-    1, 4, 6, 4, 1,
-    4, 16, 24, 16, 4,
-    6, 24, 36, 24, 6,
-    4, 16, 24, 16, 4,
-    1, 4, 6, 4, 1
-};
-
-#endif
-
-
-
 class NECannyEdgeExample : public Example
 
 //class NEONConvolutionExample : public Example
@@ -83,13 +56,12 @@ public:
         }
 
         // Initialize just the dimensions and format of the temporary and destination images:
-        tmp.allocator()->init(*src.info());
-       // dst.allocator()->init(*src.info());
+        //tmp.allocator()->init(*src.info());
+        dst.allocator()->init(*src.info());
 
         // Apply a Gaussian 3x3 filter to the source image followed by a Gaussian 5x5:
         // The function will automatically update the padding information inside input and output to match its requirements
-        conv3x3.configure(&src, &dst, gaussian3x3, 0 /* Let arm_compute calculate the scale */, BorderMode::UNDEFINED);
-       // conv5x5.configure(&tmp, &dst, gaussian5x5, 0 /* Let arm_compute calculate the scale */, BorderMode::UNDEFINED);
+	   CannyEdge.configure(&src, &dst, 100, 80, 3, 1, BorderMode::REPLICATE);
 
         // Now that the padding requirements are known we can allocate the images:
         src.allocator()->allocate();
@@ -100,7 +72,8 @@ public:
         if(ppm.is_open())
         {
             ppm.fill_image(src);
-            output_filename = std::string(argv[1]) + "_NEConvolution3x3.ppm";
+            //output_filename = std::string(argv[1]) + "_NEConvolution3x3.ppm";
+			output_filename = "NECannyEdge.ppm";
         }
         /** [Accurate padding] **/
 
@@ -109,7 +82,7 @@ public:
     void do_run() override
     {
         //Execute the functions:
-        conv3x3.run();
+        CannyEdge.run();
        // conv5x5.run();
     }
     void do_teardown() override
@@ -122,9 +95,10 @@ public:
     }
 
 private:
-    Image            src{}, tmp{}, dst{};
-    NEConvolution3x3 conv3x3{};
-   // NEConvolution5x5 conv5x5{};
+    Image            src{},  dst{};
+   // NEConvolution3x3 conv3x3{};
+	NECannyEdge CannyEdge{};
+	
     std::string      output_filename{};
 };
 
