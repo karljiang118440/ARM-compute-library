@@ -40,6 +40,7 @@ double duration;
 
 
 
+
 class NECannyEdgeExample : public Example
 
 //class NEONConvolutionExample : public Example
@@ -130,4 +131,7 @@ private:
 int main(int argc, char **argv)
 {
     return utils::run_example<NECannyEdgeExample>(argc, argv);
+
+
+	printf("mark1");
 }
