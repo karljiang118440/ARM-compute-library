@@ -30,6 +30,16 @@
 using namespace arm_compute;
 using namespace utils;
 
+
+#include <stdio.h>
+#include <time.h>
+
+
+clock_t start, stop;
+double duration;
+
+
+
 class NECannyEdgeExample : public Example
 
 //class NEONConvolutionExample : public Example
@@ -81,9 +91,19 @@ public:
     }
     void do_run() override
     {
+
+	start=clock();
         //Execute the functions:
         CannyEdge.run();
        // conv5x5.run();
+
+	stop=clock();
+
+	duration=((double)(stop-start))/CLOCKS_PER_SEC;
+
+	printf("t=%f",duration);
+
+	
     }
     void do_teardown() override
     {
