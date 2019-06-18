@@ -93,16 +93,16 @@ public:
     void do_run() override
     {
 
-	start=clock();
+	//start=clock();
         //Execute the functions:
         CannyEdge.run();
        // conv5x5.run();
 
-	stop=clock();
+	//stop=clock();
 
-	duration=((double)(stop-start))/CLOCKS_PER_SEC;
+	//duration=((double)(stop-start))/CLOCKS_PER_SEC;
 
-	printf("t=%f",duration);
+	//printf("t=%f",duration);
 
 	
     }
