@@ -27,13 +27,72 @@
 #include "utils/ImageLoader.h"
 #include "utils/Utils.h"
 
+// define HOG
+
+#include <iostream>
+#include <fstream>
+#include <stdio.h>
+#include <stdlib.h>
+#include <arm_compute/runtime/NEON/NEFunctions.h>
+#include <arm_compute/runtime/HOG.h>
+#include <arm_compute/core/Types.h>
+
+using namespace arm_compute;
+using namespace std;
+using namespace cv;
+
+
+
+
+
+
 using namespace arm_compute;
 using namespace utils;
 
 class NEHOGDescriptorExample : public Example
 
-//class NEONConvolutionExample : public Example
 {
+
+
+//for ComputeLibrary hog computing
+     int x, y;
+    // int width  = img.cols;
+    // int height = img.rows;
+     //int nchannels =  img.channels();
+
+     int width  = 640;
+     int height = 320;
+     int nchannels =  3;
+
+	cv::Mat img = imread("IMG_3824.JPG");
+
+    uint8_t *src_data = (uint8_t*)img.data;
+
+   // uint8_t *src1_data = new uint8_t[width*height];
+    Size2D  detection_window_size = Size2D(64,64);
+    Size2D  block_size = Size2D(16,16);
+    Size2D  block_stride = Size2D(8,8);
+    Size2D  cell_size = Size2D(8,8);
+
+
+
+    HOG *hog = new HOG();
+    HOGInfo hogInfo;
+    hogInfo.init(cell_size,block_size,detection_window_size,block_stride, nbins,HOGNormType::L2HYS_NORM, 0.2f, PhaseType::UNSIGNED);
+    hog->init(hogInfo);
+
+    Size2D num_cells_per_block(hogInfo.block_size().width / hogInfo.cell_size().width,
+                                         hogInfo.block_size().height / hogInfo.cell_size().height);
+    size_t num_channels = (nbins * num_cells_per_block.width * num_cells_per_block.height);
+  
+    size_t block_num = ((detection_window_size.width-block_size.width)/(block_stride.width)+1)* ((detection_window_size.height-block_size.height)/(block_stride.height)+1);
+    size_t HogDimensions = block_num*num_channels;
+    float *dst_data = new float[HogDimensions];
+
+
+
+
+
 public:
     bool do_setup(int argc, char **argv) override
     {
@@ -57,24 +116,29 @@ public:
 
         // Initialize just the dimensions and format of the temporary and destination images:
         //tmp.allocator()->init(*src.info());
-        distribution.allocator()->init(*src.info());
+
+		const TensorShape shape_(block_num,1);	  //here I don't know how to  Initialize the TensorShape for output Tensor
+		dst.allocator()->init(TensorInfo(shape_, num_channels, arm_compute::DataType::F32));
+		
+		
+		
 
          // Apply a Gaussian 3x3 filter to the source image followed by a Gaussian 5x5:
         // The function will automatically update the padding information inside input and output to match its requirements
 	   // gaus5x5.configure(&src, &dst, 100, 80, 3, 1, BorderMode::REPLICATE);
-		Histogram.configure(&src, &distribution);
+		HOGDescriptor.configure(&src,&dst,hog,BorderMode::REPLICATE,0);		 
 
         // Now that the padding requirements are known we can allocate the images:
         src.allocator()->allocate();
        // tmp.allocator()->allocate();
-        distribution.allocator()->allocate();
+        dst.allocator()->allocate();
 
         // Fill the input image with the content of the PPM image if a filename was provided:
         if(ppm.is_open())
         {
             ppm.fill_image(src);
             //output_filename = std::string(argv[1]) + "_NEConvolution3x3.ppm";
-			output_filename = "NEHistogram.ppm";
+			output_filename = "NEHOGDescriptor.ppm";
         }
         /** [Accurate padding] **/
 
@@ -82,8 +146,52 @@ public:
     }
     void do_run() override
     {
+
+
+    Window input_window;
+    input_window.use_tensor_dimensions(input.info());
+   
+    // Create an iterator:
+    Iterator input_it(&input, input_window);
+
+    // Except it works for an arbitrary number of dimensions
+    execute_window_loop(input_window, [&](const Coordinates & id)
+    {
+        // std::cout << "Setting item [" << id.x() << "," << id.y() << "," << id.z() << "]\n";
+        *reinterpret_cast<uint8_t *>(input_it.ptr()) = src_data[id.z() * (width_ * height_) + id.y() * width_ + id.x()];
+    },
+    input_it);
+
+	
         //Execute the functions:
-        Histogram.run();
+        HOGDescriptor.run();
+		
+		Window output_window;
+		output_window.use_tensor_dimensions(output.info(), /* first_dimension =*/Window::DimY); 
+		
+		// Create an iterator:
+		Iterator output_it(&output, output_window);
+		
+		execute_window_loop(output_window, [&](const Coordinates & id)
+		{
+			// Copy one whole row:
+			memcpy(dst_data + id.z() * (width * height) + id.y() * width, output_it.ptr(), width * sizeof(float));
+		},
+		output_it);
+
+		for(int i = 0;i<HogDimensions;i++)
+		{
+			std::cout<<(float)dst_data[i]<<"  ";
+		}
+
+
+#if 0		
+			delete	hog; 
+			delete [] src1_data;
+			delete [] dst_data;
+
+#endif		
+
 
     }
     void do_teardown() override
@@ -97,9 +205,7 @@ public:
 
 private:
     Image            src{},  dst{};
-	
-	NEHistogram       Histogram{};
-	IDistribution1D   distribution{};
+	NEHOGDescriptor       HOGDescriptor{};
     std::string      output_filename{};
 };
 
