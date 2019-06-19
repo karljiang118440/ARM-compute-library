@@ -30,7 +30,7 @@
 using namespace arm_compute;
 using namespace utils;
 
-class NEGaussian5x5Example : public Example
+class NEHistogramExample : public Example
 
 //class NEONConvolutionExample : public Example
 {
@@ -57,24 +57,24 @@ public:
 
         // Initialize just the dimensions and format of the temporary and destination images:
         //tmp.allocator()->init(*src.info());
-        dst.allocator()->init(*src.info());
+        distribution.allocator()->init(*src.info());
 
          // Apply a Gaussian 3x3 filter to the source image followed by a Gaussian 5x5:
         // The function will automatically update the padding information inside input and output to match its requirements
 	   // gaus5x5.configure(&src, &dst, 100, 80, 3, 1, BorderMode::REPLICATE);
-		gaus5x5.configure(&src, &dst,  BorderMode::REPLICATE);
+		Histogram.configure(&src, &distribution);
 
         // Now that the padding requirements are known we can allocate the images:
         src.allocator()->allocate();
        // tmp.allocator()->allocate();
-        dst.allocator()->allocate();
+        distribution.allocator()->allocate();
 
         // Fill the input image with the content of the PPM image if a filename was provided:
         if(ppm.is_open())
         {
             ppm.fill_image(src);
             //output_filename = std::string(argv[1]) + "_NEConvolution3x3.ppm";
-			output_filename = "NEGaussian5x5.ppm";
+			output_filename = "NEHistogram.ppm";
         }
         /** [Accurate padding] **/
 
@@ -83,8 +83,8 @@ public:
     void do_run() override
     {
         //Execute the functions:
-        CannyEdge.run();
-       // conv5x5.run();
+        Histogram.run();
+
     }
     void do_teardown() override
     {
@@ -97,9 +97,10 @@ public:
 
 private:
     Image            src{},  dst{};
-   // NEConvolution3x3 conv3x3{};
-	NEGaussian5x5           gaus5x5{};
 	
+   // NEConvolution3x3 conv3x3{};
+	NEHistogram       Histogram{};
+	IDistribution1D   distribution{};
     std::string      output_filename{};
 };
 
@@ -110,5 +111,5 @@ private:
  */
 int main(int argc, char **argv)
 {
-    return utils::run_example<NEGaussian5x5Example>(argc, argv);
+    return utils::run_example<NEHistogramExample>(argc, argv);
 }
